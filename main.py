@@ -1,5 +1,6 @@
 import os.path
 import datetime as DT
+import calendar 
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -8,6 +9,23 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
+
+def whatDay(x):
+    if(x == 0):
+        return "Monday"
+    elif(x==1):
+        return "Tueday"
+    elif(x==2):
+        return "Wednesday"
+    elif(x==3):
+        return "Thurday"
+    elif(x==4):
+        return "Friday"
+    elif(x == 5):
+        return "Saturday"
+    elif(x == 6):
+        return "Sunday"
+
 
 def main():
     #automatically sets the credential to none to have a variable that we can work with.
@@ -53,10 +71,16 @@ def main():
 
 
         }
-
+        day1Events = []
+        day2Events = []
+        day3Events = []
+        day4Events = []
+        day5Events = []
+        day6Events = []
+        day7Events = []
         now = DT.datetime.now().isoformat() + "Z"
 
-        event_result = service.events().list(calendarId="primary", timeMin=now, maxResults=10, singleEvents=True, orderBy ="startTime").execute()
+        event_result = service.events().list(calendarId="primary", timeMin=now, maxResults=80, singleEvents=True, orderBy ="startTime").execute()
         # createEventExecute = service.events().insert(calendarId = "primary", body = createEvent).execute()
         events = event_result.get("items",[])
 
@@ -64,7 +88,21 @@ def main():
             print("No upcoming events MAKE SOME PLANS!")
             return
         
+        day1Date = str(events[0]["start"].get("dateTime", events[0]["start"].get("date")))
+        day1Year = day1Date[0:4]
+        day1Month = day1Date[5:7]
+        day1Day = day1Date[8:10]
+        print(day1Date)
+        print(day1Year)
+        print(day1Month)
+        print(day1Day)
+        print("this is me trying to find the first index")
+        print("this is the date of " , day1Month, " - ",day1Day, "   : \n" )
+        print("the day of the week is :" , whatDay(calendar.weekday(int(day1Year),int(day1Month), int(day1Day))))
+        
+        print(calendar.weekday(int(day1Year),int(day1Month), int(day1Day)))
         for event in events:
+            #start = event["start"].get("dateTime", event["start"].get("date"))
             start = event["start"].get("dateTime", event["start"].get("date"))
             print(start, event["summary"])
 
