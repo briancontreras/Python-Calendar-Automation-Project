@@ -9,6 +9,18 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
+def printDayEvents(x):
+    date = x[0][0:10]
+    dayYear = date[0:4]
+    dayMonth = date[5:7]
+    dayDay = date[8:10]
+    day = whatDay(calendar.weekday(int(dayYear),int(dayMonth), int(dayDay)))
+    month  = whatMonth(dayMonth)
+    print(date)
+    print(day,",",month,dayDay,",",dayYear)
+    for y in x:
+        print(y[11:len(y)])
+
 
 def whatDay(x):
     if(x == 0):
@@ -25,7 +37,32 @@ def whatDay(x):
         return "Saturday"
     elif(x == 6):
         return "Sunday"
-
+    
+def whatMonth(x):
+    if(x == "01"):
+        return "January"
+    elif(x== "02"):
+        return "Feburary"
+    elif(x== "03"):
+        return "March"
+    elif(x== "04"):
+        return "April"
+    elif(x== "05"):
+        return "May"
+    elif(x== "06"):
+        return "June"
+    elif(x== "07"):
+        return "July"
+    elif(x== "08"):
+        return "August"
+    elif(x== "09"):
+        return "September"
+    elif(x== "10"):
+        return "October"
+    elif(x== "11"):
+        return "November"
+    elif(x== "12"):
+        return "December"
 
 def main():
     #automatically sets the credential to none to have a variable that we can work with.
@@ -111,60 +148,54 @@ def main():
         for event in events:
             #start = event["start"].get("dateTime", event["start"].get("date"))
             start = event["start"].get("dateTime", event["start"].get("date"))
+            end = event["end"].get("dateTime",event["end"].get("date"))
             arrDate = event["start"].get("dateTime")[0:10]
             if(len(day0Events)==0):
                 day0Date = arrDate
-                day0Events.append(start + "   "+event["summary"])
+                day0Events.append(start + "  --  "+end+"   "+event["summary"])
             elif(day0Date == arrDate):
-                day0Events.append(start + "   "+event["summary"])
+                day0Events.append(start + "  --  "+end+ "   "+event["summary"])
             elif(len(day1Events)==0):
                 day1Date = arrDate
-                day1Events.append(start + "   " + event["summary"])
+                day1Events.append(start + "  --  "+end+ "   " + event["summary"])
             elif(day1Date == arrDate):
-                day1Events.append(start + "   " + event["summary"])
+                day1Events.append(start + "  --  "+end+ "   " + event["summary"])
             elif(len(day2Events)==0):
                 day2Date = arrDate
-                day2Events.append(start+"   "+event["summary"])
+                day2Events.append(start+ "  --  "+end+"   "+event["summary"])
             elif(day2Date == arrDate):
-                day2Events.append(start+"   "+event["summary"])
+                day2Events.append(start+ "  --  "+end+"   "+event["summary"])
             elif(len(day3Events)==0):
                 day3Date = arrDate
-                day3Events.append(start+"   " + event["summary"])
+                day3Events.append(start+ "  --  "+end+"   " + event["summary"])
             elif(day3Date == arrDate):
-                day3Events.append(start+"   " + event["summary"])
+                day3Events.append(start+ "  --  "+end+"   " + event["summary"])
             elif(len(day4Events)==0):
                 day4Date = arrDate
-                day4Events.append(start+"   " + event["summary"])
+                day4Events.append(start+ "  --  "+end+"   " + event["summary"])
             elif(day4Date == arrDate):
-                day4Events.append(start+"   " + event["summary"])            
+                day4Events.append(start+ "  --  "+end+"   " + event["summary"])            
             elif(len(day5Events)==0):
                 day5Date = arrDate
-                day5Events.append(start+"   " + event["summary"])
+                day5Events.append(start+ "  --  "+end+"   " + event["summary"])
             elif(day5Date == arrDate):
-                day5Events.append(start+"   " + event["summary"])                
+                day5Events.append(start+ "  --  "+end+"   " + event["summary"])                
             elif(len(day6Events)==0):
                 day6Date = arrDate
-                day6Events.append(start+"   " + event["summary"])
+                day6Events.append(start+ "  --  "+end+"   " + event["summary"])
             elif(day6Date == arrDate):
-                day6Events.append(start+"   " + event["summary"])
+                day6Events.append(start+ "  --  "+end+"   " + event["summary"])
             else:
                 break
-            print(arrDate, " This is the date",start, event["summary"])
+            print(arrDate, " This is the date",start,"- ",end, event["summary"])
 
-        print("this is testing the first day function")
-        print(day0Events)
-        print("this is testing the second day")
-        print(day1Events)
-        print("this is me testing the third day")
-        print(day2Events)
-        print("this is me testing the fourth day")
-        print(day3Events)
-        print("this is me testing the fifth day")
-        print(day4Events)
-        print("this is my testing the sixth day")
-        print(day5Events)
-        print("this is me testing the seventh day")
-        print(day6Events)
+        printDayEvents(day0Events)
+        printDayEvents(day1Events)
+        printDayEvents(day2Events)
+        printDayEvents(day3Events)
+        printDayEvents(day4Events)
+        printDayEvents(day5Events)
+        printDayEvents(day6Events)
     except HttpError as error:
         print("An error has occured: ", error)
 
