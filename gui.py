@@ -30,6 +30,7 @@ def openNewWindow():
         calendarWindow = Tk()
         calendarWindow.geometry("800x500")
         calendarWindow.title("This should be your calendar ")
+        calendarWindow.configure(bg="#83a6eb")
 
     else:
         appWindowLabel = Label(appWindow,text="Please give credentials to continue")

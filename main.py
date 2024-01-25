@@ -1,6 +1,8 @@
 import os.path
 import datetime as DT
 import calendar 
+from tkinter import*
+from tkinter import ttk
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -9,6 +11,38 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
+def openNewWindow(day0,day1,day2,day3,day4,day5,day6):
+    appWindow = Tk()
+    appWindow.title("Application")
+    val = True
+    if val:
+        appWindowLabel = Label(appWindow, text="Credentails recgonized going to next screen")
+        appWindowLabel.pack()
+        appWindow.destroy()
+        calendarWindow = Tk()
+        calendarWindow.title("This should be your calendar ")
+        calendarWindow.configure(bg="#83a6eb")
+        LabelStart =  Label(calendarWindow, text="Here are your tasks for the next 7 days")
+        LabelStart.pack()
+        table = ttk.Treeview(calendarWindow, columns=('first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh'), show='headings')
+        table.heading('first', text=returnDates(day0))
+        table.heading('second', text=returnDates(day1))
+        table.heading('third', text=returnDates(day2))
+        table.heading('fourth', text= returnDates(day3))
+        table.heading('fifth', text= returnDates(day4))
+        table.heading('sixth',text=returnDates(day5))
+        table.heading('seventh', text=returnDates(day6))
+
+        table.pack()
+        
+
+
+
+    else:
+        appWindowLabel = Label(appWindow,text="Please give credentials to continue")
+        appWindowLabel.pack()
+
+    
 def printDayEvents(x):
     date = x[0][0:10]
     dayYear = date[0:4]
@@ -21,6 +55,14 @@ def printDayEvents(x):
     for y in x:
         print(y[11:len(y)])
 
+def returnDates(x):
+    date = x[0][0:10]
+    dayYear = date[0:4]
+    dayMonth = date[5:7]
+    dayDay = date[8:10]
+    day = whatDay(calendar.weekday(int(dayYear),int(dayMonth), int(dayDay)))
+    month  = whatMonth(dayMonth)
+    return day,",",month,dayDay,",",dayYear
 
 def whatDay(x):
     if(x == 0):
@@ -122,6 +164,7 @@ def main():
         day5Date = 0 
         day6Events = []
         day6Date = 0 
+        allEvents = [day0Events, day1Events, day2Events, day3Events,day4Events, day5Events, day6Events]
         now = DT.datetime.now().isoformat() + "Z"
 
         event_result = service.events().list(calendarId="primary", timeMin=now, maxResults=80, singleEvents=True, orderBy ="startTime").execute()
@@ -189,6 +232,22 @@ def main():
                 break
             print(arrDate, " This is the date",start,"- ",end, event["summary"])
 
+
+
+
+        root = Tk()
+        root.geometry("800x500")
+        root.title("Calendar Automation App")
+        root.configure(bg="#83a6eb")
+
+        #creating the title label for this GUI
+        myLabel = Label(root, text="Python Calendar Automation")
+        myLabel.place(relx=0.5,rely=0.025,anchor=CENTER)
+        myLabel.grid(row=0,column=0, padx=300, pady=50)
+
+        myButtonStart = Button(root, text="Start Application",height=5,width=25,command=lambda: (openNewWindow(day0Events,day1Events,day2Events,day3Events,day4Events,day5Events,day6Events))).grid(row=1,column=0, pady=10)
+        myButtonExit = Button(root, text="Exit Application",height=5,width=25).grid(row=2,column=0, pady=10)        
+        root.mainloop()
         printDayEvents(day0Events)
         printDayEvents(day1Events)
         printDayEvents(day2Events)
