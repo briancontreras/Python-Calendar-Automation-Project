@@ -1,0 +1,2 @@
+Welcome to my Calendar Automation Project, the reason I created this app is because I would find myself wanting to complete a lot of tasks throughout the week but would not want to make the effort to find free time within my schedule.
+For this reason I decided to make this Tkinter GUI that allows for you to automatically add tasks within your personal google calendar and this allows for there to be less friction when planning your week, and also let's you know if you are actually not free during this week so you don't have to fall back on personal commitments.  
