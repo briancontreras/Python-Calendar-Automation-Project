@@ -3,6 +3,7 @@ import datetime as DT
 import calendar 
 from tkinter import*
 from tkinter import ttk
+import time
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -11,7 +12,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
-def openNewWindow(day0,day1,day2,day3,day4,day5,day6):
+def openNewWindow(day0,day1,day2,day3,day4,day5,day6,allEvents):
     appWindow = Tk()
     appWindow.title("Application")
     val = True
@@ -24,25 +25,63 @@ def openNewWindow(day0,day1,day2,day3,day4,day5,day6):
         calendarWindow.configure(bg="#83a6eb")
         LabelStart =  Label(calendarWindow, text="Here are your tasks for the next 7 days")
         LabelStart.pack()
-        table = ttk.Treeview(calendarWindow, columns=('first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh'), show='headings')
-        table.heading('first', text=returnDates(day0))
-        table.heading('second', text=returnDates(day1))
-        table.heading('third', text=returnDates(day2))
-        table.heading('fourth', text= returnDates(day3))
-        table.heading('fifth', text= returnDates(day4))
-        table.heading('sixth',text=returnDates(day5))
-        table.heading('seventh', text=returnDates(day6))
+        #creates table to display events
+        # table = ttk.Treeview(calendarWindow, columns=('first','second','third', 'fourth', 'fifth','sixth','seventh','8','9'), show='headings')
 
-        table.pack()
-        
+        week = ttk.Treeview(calendarWindow,columns=('first','second'), show='headings')
+        week.pack()
+
+        firstDay = ttk.Treeview(week, columns=('first'), show='headings')
+        #displays the headings for the table
+        firstDay.heading('first', text=returnDates(day0))
+        # table.heading('second', text=returnDates(day1))
+        # table.heading('third', text=returnDates(day2))
+        # table.heading('fourth', text= returnDates(day3))
+        # table.heading('fifth', text= returnDates(day4))
+        # table.heading('sixth',text=returnDates(day5))
+        # table.heading('seventh', text=returnDates(day6))
+
+        for x in range(len(day0)):
+            firstDay.insert(parent='',index=(x),values=timeTitle(day0[x]))
+        firstDay.pack()
+
+        secondDay = ttk.Treeview(week, columns=('second'), show='headings')
+        secondDay.heading('second',text=returnDates(day1))
+        for x in range(len(day1)):
+            secondDay.insert(parent='',index=(x),values=timeTitle(day1[x]))
+        secondDay.pack()
 
 
+        # day0Index = 0
+        # day1Index = 0
+        # day2Index = 0
+        # day3Index = 0
+        # day4Index = 0
+        # day5Index = 0
+        # day6Index = 0
 
     else:
         appWindowLabel = Label(appWindow,text="Please give credentials to continue")
         appWindowLabel.pack()
 
+def timeTitle(x):
+    # if int(x[11:13])
+    startTime = x[11:13]
+    if int(startTime) > 12:
+        startTime = str(int(startTime) -12)
+        startTime = startTime + x[13:16]+ "PM" 
+    else:
+        startTime = str(int(startTime)) + x[13:16] + "AM"
     
+    endTime = x[42:44]
+    print(endTime)
+    if int(endTime) > 12:
+        endTime = str(int(endTime) -12)
+        endTime = endTime + x[44:47] + "PM"
+    else:
+        endTime = endTime + x[44:47] + "AM"
+    eventTitle = x[59:len(x)].replace(" ", "_")
+    return "("+startTime+"-"+endTime+")" +eventTitle
 def printDayEvents(x):
     date = x[0][0:10]
     dayYear = date[0:4]
@@ -245,8 +284,8 @@ def main():
         myLabel.place(relx=0.5,rely=0.025,anchor=CENTER)
         myLabel.grid(row=0,column=0, padx=300, pady=50)
 
-        myButtonStart = Button(root, text="Start Application",height=5,width=25,command=lambda: (openNewWindow(day0Events,day1Events,day2Events,day3Events,day4Events,day5Events,day6Events))).grid(row=1,column=0, pady=10)
-        myButtonExit = Button(root, text="Exit Application",height=5,width=25).grid(row=2,column=0, pady=10)        
+        myButtonStart = Button(root, text="Start Application",height=5,width=25,command=lambda: (openNewWindow(day0Events,day1Events,day2Events,day3Events,day4Events,day5Events,day6Events,allEvents))).grid(row=1,column=0, pady=10)
+        myButtonExit = Button(root, text="Exit Application",height=5,width=25,command=lambda:(root.destroy())).grid(row=2,column=0, pady=10)        
         root.mainloop()
         printDayEvents(day0Events)
         printDayEvents(day1Events)
