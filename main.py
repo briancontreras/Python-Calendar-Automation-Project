@@ -28,28 +28,47 @@ def openNewWindow(day0,day1,day2,day3,day4,day5,day6,allEvents):
         #creates table to display events
         # table = ttk.Treeview(calendarWindow, columns=('first','second','third', 'fourth', 'fifth','sixth','seventh','8','9'), show='headings')
 
-        week = ttk.Treeview(calendarWindow,columns=('first','second'), show='headings')
+        week = ttk.Treeview(calendarWindow,columns=('first','second','third', 'fourth', 'fifth','sixth','seventh'), show='headings')
+        week.heading('first', text=returnDates(day0))
+        week.heading('second', text=returnDates(day1))
+        week.heading('third', text=returnDates(day2))
+        week.heading('fourth', text= returnDates(day3))
+        week.heading('fifth', text= returnDates(day4))
+        week.heading('sixth',text=returnDates(day5))
+        week.heading('seventh', text=returnDates(day6))
+
+        weekData = ""
+        weekData = addDayData(weekData, day0)
+        weekData = addDayData(weekData,day1)
+        weekData = addDayData(weekData, day2)
+        weekData = addDayData(weekData, day3)
+        weekData = addDayData(weekData, day4)
+        weekData = addDayData(weekData, day5)
+        weekData = addDayData(weekData, day6)
+        
+
+        week.insert(parent='', index=(0),values=weekData)
         week.pack()
 
-        firstDay = ttk.Treeview(week, columns=('first'), show='headings')
-        #displays the headings for the table
-        firstDay.heading('first', text=returnDates(day0))
-        # table.heading('second', text=returnDates(day1))
-        # table.heading('third', text=returnDates(day2))
-        # table.heading('fourth', text= returnDates(day3))
-        # table.heading('fifth', text= returnDates(day4))
-        # table.heading('sixth',text=returnDates(day5))
-        # table.heading('seventh', text=returnDates(day6))
+        # firstDay = ttk.Treeview(week, columns=('first'), show='headings')
+        # #displays the headings for the table
+        # firstDay.heading('first', text=returnDates(day0))
+        # # table.heading('second', text=returnDates(day1))
+        # # table.heading('third', text=returnDates(day2))
+        # # table.heading('fourth', text= returnDates(day3))
+        # # table.heading('fifth', text= returnDates(day4))
+        # # table.heading('sixth',text=returnDates(day5))
+        # # table.heading('seventh', text=returnDates(day6))
 
-        for x in range(len(day0)):
-            firstDay.insert(parent='',index=(x),values=timeTitle(day0[x]))
-        firstDay.pack()
+        # for x in range(len(day0)):
+        #     firstDay.insert(parent='',index=(x),values=timeTitle(day0[x]))
+        # firstDay.pack()
 
-        secondDay = ttk.Treeview(week, columns=('second'), show='headings')
-        secondDay.heading('second',text=returnDates(day1))
-        for x in range(len(day1)):
-            secondDay.insert(parent='',index=(x),values=timeTitle(day1[x]))
-        secondDay.pack()
+        # secondDay = ttk.Treeview(week, columns=('second'), show='headings')
+        # secondDay.heading('second',text=returnDates(day1))
+        # for x in range(len(day1)):
+        #     secondDay.insert(parent='',index=(x),values=timeTitle(day1[x]))
+        # secondDay.pack()
 
 
         # day0Index = 0
@@ -63,6 +82,12 @@ def openNewWindow(day0,day1,day2,day3,day4,day5,day6,allEvents):
     else:
         appWindowLabel = Label(appWindow,text="Please give credentials to continue")
         appWindowLabel.pack()
+def addDayData(data,day):
+    for x in range(len(day)):
+        data += timeTitle(day[x])
+        data += "\n"
+    data += " "
+    return data
 
 def timeTitle(x):
     # if int(x[11:13])
@@ -74,7 +99,6 @@ def timeTitle(x):
         startTime = str(int(startTime)) + x[13:16] + "AM"
     
     endTime = x[42:44]
-    print(endTime)
     if int(endTime) > 12:
         endTime = str(int(endTime) -12)
         endTime = endTime + x[44:47] + "PM"
@@ -144,7 +168,8 @@ def whatMonth(x):
         return "November"
     elif(x== "12"):
         return "December"
-
+def nextDay(date):
+    year = 
 def main():
     #automatically sets the credential to none to have a variable that we can work with.
     creds = None
@@ -218,23 +243,19 @@ def main():
         day1Year = day1Date[0:4]
         day1Month = day1Date[5:7]
         day1Day = day1Date[8:10]
-        print(day1Date)
-        print(day1Year)
-        print(day1Month)
-        print(day1Day)
-        print("this is me trying to find the first index")
-        print("this is the date of " , day1Month, " - ",day1Day, "   : \n" )
-        print("the day of the week is :" , whatDay(calendar.weekday(int(day1Year),int(day1Month), int(day1Day))))
-        
-        print(calendar.weekday(int(day1Year),int(day1Month), int(day1Day)))
         for event in events:
             #start = event["start"].get("dateTime", event["start"].get("date"))
             start = event["start"].get("dateTime", event["start"].get("date"))
             end = event["end"].get("dateTime",event["end"].get("date"))
             arrDate = event["start"].get("dateTime")[0:10]
+            
+            #this is to take care of the empty days
+            
+
             if(len(day0Events)==0):
                 day0Date = arrDate
                 day0Events.append(start + "  --  "+end+"   "+event["summary"])
+                print(day0Date)
             elif(day0Date == arrDate):
                 day0Events.append(start + "  --  "+end+ "   "+event["summary"])
             elif(len(day1Events)==0):
@@ -269,7 +290,7 @@ def main():
                 day6Events.append(start+ "  --  "+end+"   " + event["summary"])
             else:
                 break
-            print(arrDate, " This is the date",start,"- ",end, event["summary"])
+            # print(arrDate, " This is the date",start,"- ",end, event["summary"])
 
 
 
@@ -287,13 +308,6 @@ def main():
         myButtonStart = Button(root, text="Start Application",height=5,width=25,command=lambda: (openNewWindow(day0Events,day1Events,day2Events,day3Events,day4Events,day5Events,day6Events,allEvents))).grid(row=1,column=0, pady=10)
         myButtonExit = Button(root, text="Exit Application",height=5,width=25,command=lambda:(root.destroy())).grid(row=2,column=0, pady=10)        
         root.mainloop()
-        printDayEvents(day0Events)
-        printDayEvents(day1Events)
-        printDayEvents(day2Events)
-        printDayEvents(day3Events)
-        printDayEvents(day4Events)
-        printDayEvents(day5Events)
-        printDayEvents(day6Events)
     except HttpError as error:
         print("An error has occured: ", error)
 
