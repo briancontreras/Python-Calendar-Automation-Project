@@ -169,7 +169,7 @@ def whatMonth(x):
     elif(x== "12"):
         return "December"
 def nextDay(date):
-    year = 
+    pass
 def main():
     #automatically sets the credential to none to have a variable that we can work with.
     creds = None
